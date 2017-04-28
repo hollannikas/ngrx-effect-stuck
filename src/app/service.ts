@@ -1,26 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/range';
+import 'rxjs/add/operator/delay';
+import { NetworkService } from './network-service';
 
 @Injectable()
 export class Service {
-  private counter: number;
-  constructor() {
-    this.counter = 0;
-  }
+
+  constructor(private networkService: NetworkService) {}
 
   addFeed(action: any): Observable<any> {
-    this.counter++;
-
-    if (this.counter > 3){
-      console.log('Loop counter: ' + this.counter);
-      console.log('It should stop after 3 iterations and terminate with the reducer to ADD + SUCCESS' );
-      return Observable.of('LOOP_SHOULD_BE_OVER');
-    } else
-      return Observable.of('WAIT_NEEDED');
-  }
-
-  waitForXSec(number: number): Observable<any> {
-    return Observable.interval(number *1000); // let's wait x seconds before changing the state
+    if (this.networkService.hasConnection()) {
+      return Observable.of('Some stuff from firebase')
+        .do(() => console.log('doing whatever addFeed does'));
+    } else {
+      return Observable.of('Some stuff from firebase')
+        .delay(3000) // ms
+        .do(() => console.log('doing whatever addFeed does, but 3 seconds later'));
+    }
   }
 }
