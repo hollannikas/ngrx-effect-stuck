@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,12 @@ import { Store } from '@ngrx/store';
 export class AppComponent {
   title = 'app works!';
 
-  constructor(private store: Store<any>) {}
+  stuffFromFirebase: Observable<any[]>;
+
+  constructor(private store: Store<any>) {
+    this.stuffFromFirebase = this.store.select('state')
+      .map(state => state);
+  }
 
   add() {
     this.store.dispatch({type: 'ADD', payload: ''});
