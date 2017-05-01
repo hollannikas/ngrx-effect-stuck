@@ -2,6 +2,11 @@
   {{title}}
 </h1>
 
+<button (click)="toggleConnection()">Toggle connection</button>
+<div *ngIf="connection">We have connection!</div>
+
+<br>
+
 <button (click)="add()">ADD</button>
 <br>
 <b>Stuff from firebase:</b>

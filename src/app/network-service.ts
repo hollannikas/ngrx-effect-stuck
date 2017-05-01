@@ -7,4 +7,8 @@ export class NetworkService {
   hasConnection(): boolean {
     return this.connection;
   }
+
+  toggleConnection() {
+    this.connection = !this.connection;
+  }
 }
