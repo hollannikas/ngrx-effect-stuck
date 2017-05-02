@@ -13,25 +13,8 @@ export class MyEffects {
   @Effect() add$: Observable<any> = this.actions$
     .ofType('ADD')
     .switchMap((action) => this.service.addFeed(action)
-      .map(result => {
-        console.log(`Result: ${result}`);
-        if (result === 'WAIT_NEEDED') {
-          return { type: 'WAITING_NETWORK', payload: action };
-        } else {
-          return { type: 'SUCCESS' };
-        }
-      })
+      .map(result => ({ type: 'ADDED', payload: result }))
       .catch(() => Observable.of({ type: 'ACTION_ERROR' }))
-    );
-
-
-  @Effect() wait$: Observable<any> = this.actions$
-    .ofType('WAITING_NETWORK')
-    .switchMap((action) => this.service.waitForXSec(4)
-      .map(() => ({ type: action.payload.type, payload: action.payload.payload }))
-      .catch((error) =>
-        Observable.of({ type: 'ACTION_ERROR' })
-      )
     );
 
   constructor(

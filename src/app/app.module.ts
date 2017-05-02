@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { reducer } from './reducer';
 import { MyEffects } from './effects';
 import { Service } from './service';
+import { NetworkService } from './network-service';
 
 export function instrumentOptions() {
   return {
@@ -30,7 +31,10 @@ export function instrumentOptions() {
     StoreModule.provideStore( { state: reducer }),
     EffectsModule.run(MyEffects)
   ],
-  providers: [Service],
+  providers: [
+    Service,
+    NetworkService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

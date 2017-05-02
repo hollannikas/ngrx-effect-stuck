@@ -1,26 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/retryWhen';
+import { NetworkService } from './network-service';
 
 @Injectable()
 export class Service {
-  private counter: number;
-  constructor() {
-    this.counter = 0;
-  }
+
+  constructor(private networkService: NetworkService) {}
 
   addFeed(action: any): Observable<any> {
-    this.counter++;
-
-    if (this.counter > 3){
-      console.log('Loop counter: ' + this.counter);
-      console.log('It should stop after 3 iterations and terminate with the reducer to ADD + SUCCESS' );
-      return Observable.of('LOOP_SHOULD_BE_OVER');
-    } else
-      return Observable.of('WAIT_NEEDED');
-  }
-
-  waitForXSec(number: number): Observable<any> {
-    return Observable.interval(number *1000); // let's wait x seconds before changing the state
+    return Observable.of('Stuff from firebase')
+      .map(stuff => {
+        if (!this.networkService.hasConnection()) {
+          throw Error('No connection');
+        }
+        console.log('We have a connection!');
+        return stuff;
+      })
+      .retryWhen(errors => errors
+        .do(() => console.log('Waiting for connection'))
+        .delay(3000));
   }
 }
